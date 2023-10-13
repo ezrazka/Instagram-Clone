@@ -1,3 +1,5 @@
+from flask_login import UserMixin
+
 from application import db
 from datetime import datetime
 
@@ -7,10 +9,16 @@ class User(db.Model):
     username = db.Column(db.String(31), nullable=False)
     password = db.Column(db.String(63), nullable=False)
     fullname = db.Column(db.String(127), nullable=False)
+    email = db.Column(db.String(127), nullable=False)
     profile_pic = db.Column(db.String(255), default="default.jpg")
     bio = db.Column(db.String(255))
     join_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.Boolean, default=True)
+    follower_users = db.relationship("Relation", foreign_keys="Relation.ifollower_id", backref="follower", lazy=True)
+    following_users = db.relationship("Relation", foreign_keys="Relation.following_id", backref="following", lazy=True)
+    posts = db.relationship("Relation", foreign_keys="Post", backref="posts_owner", lazy=True)
+    comments = db.relationship("Comment", backref="comments_owner", lazy=True)
+    likes = db.relationship("Like", backref="likes_owner", lazy=True)
                          
 class Relation(db.Model):
     __tablename__ = "relations"
@@ -29,6 +37,8 @@ class Post(db.Model):
     caption = db.Column(db.String(1023), default="")
     status = db.Column(db.Boolean, default=True)
     post_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
+    comments = db.relationship("Comment", backref="commented", lazy=True)
+    likes = db.relationship("Like", backref="liked", lazy=True)
 
 class Comment(db.Model):
     __tablename__ = "comments"
