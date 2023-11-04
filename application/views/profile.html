@@ -1,5 +1,28 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <h1>Hi - {{ current_user.fullname }}</h1>
+    <div class="profile-info">
+        <div class="profile-info-top">
+            <div class="profile-photo">
+                <img src="../static/images/posts/4b42ead43b.png" alt="Profile Photo">
+            </div>
+            <div class="profile-stats">
+                <div class="profile-stat">
+                    <p class="stat-title">Posts</p>
+                    <p class="stat-value">{{ "test" }}</p>
+                </div>
+                <div class="profile-stat">
+                    <p class="stat-title">Followers</p>
+                    <p class="stat-value">{{ "test" }}</p>
+                </div>
+                <div class="profile-stat">
+                    <p class="stat-title">Following</p>
+                    <p class="stat-value">{{ "test" }}</p>
+                </div>
+            </div>
+        </div>
+        <div class="profile-description-container">
+            <p class="profile-description">Test</p>
+        </div>
+    </div>
 {% endblock content %}
