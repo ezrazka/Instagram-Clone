@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from application import db
 from datetime import datetime
 
-class User(db.Model):
+class User(db.Model, UserMixin):
     __tablename__ = "users"
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(31), nullable=False)
@@ -14,9 +14,9 @@ class User(db.Model):
     bio = db.Column(db.String(255))
     join_date = db.Column(db.DateTime, default=datetime.utcnow)
     status = db.Column(db.Boolean, default=True)
-    follower_users = db.relationship("Relation", foreign_keys="Relation.ifollower_id", backref="follower", lazy=True)
+    follower_users = db.relationship("Relation", foreign_keys="Relation.follower_id", backref="follower", lazy=True)
     following_users = db.relationship("Relation", foreign_keys="Relation.following_id", backref="following", lazy=True)
-    posts = db.relationship("Relation", foreign_keys="Post", backref="posts_owner", lazy=True)
+    posts = db.relationship("Post", backref="posts_owner", lazy=True)
     comments = db.relationship("Comment", backref="comments_owner", lazy=True)
     likes = db.relationship("Like", backref="likes_owner", lazy=True)
                          
@@ -43,7 +43,7 @@ class Post(db.Model):
 class Comment(db.Model):
     __tablename__ = "comments"
     id = db.Column(db.Integer, primary_key=True)
-    text = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
+    text = db.Column(db.Integer, nullable=False)
     commenter_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
     hidden = db.Column(db.Boolean, default=False)
@@ -52,7 +52,7 @@ class Comment(db.Model):
 class Like(db.Model):
     __tablename__ = "likes"
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)
     post_id = db.Column(db.Integer, db.ForeignKey("posts.id"), nullable=False)
     status = db.Column(db.Boolean, default=True)
     like_date = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)

@@ -1,0 +1,93 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="">
+        <form action="" method="post">
+            {{ form.hidden_tag() }}
+            <fieldset class="">
+                <legend class="">Signup</legend>
+
+                <div class="">
+                    {{ form.fullname.label(class="") }}
+
+                    {% if form.fullname.error %}
+                        {{ form.fullname(class="") }}
+                        <div class="">
+                            {% for error in form.fullname.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.fullname(class="") }}
+                    {% endif %}
+                </div>
+
+                <div class="">
+                    {{ form.password.label(class="") }}
+
+                    {% if form.password.error %}
+                        {{ form.password(class="") }}
+                        <div class="">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="") }}
+                    {% endif %}
+                </div>
+
+                <div class="">
+                    {{ form.email.label(class="") }}
+
+                    {% if form.email.error %}
+                        {{ form.email(class="") }}
+                        <div class="">
+                            {% for error in form.email.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.email(class="") }}
+                    {% endif %}
+                </div>
+
+                <div class="">
+                    {{ form.password.label(class="") }}
+
+                    {% if form.password.error %}
+                        {{ form.password(class="") }}
+                        <div class="">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.password(class="") }}
+                    {% endif %}
+                </div>
+
+                <div class="">
+                    {{ form.confirm_password.label(class="") }}
+
+                    {% if form.confirm_password.error %}
+                        {{ form.confirm_password(class="") }}
+                        <div class="">
+                            {% for error in form.confirm_password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.confirm_password(class="") }}
+                    {% endif %}
+                </div>
+            </fieldset>
+            <div class="">
+                {{ form.submit(class="btn btn-outline-info") }}
+                <small class="">
+                    <a href="{{ url_for('login') }}">Sudah punya akun?</a>
+                </small>
+            </div>
+        </form>
+    </div>
+{% endblock content %}
