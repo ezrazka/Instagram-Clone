@@ -9,20 +9,27 @@
             <div class="profile-stats">
                 <div class="profile-stat">
                     <p class="stat-title">Posts</p>
-                    <p class="stat-value">{{ "test" }}</p>
+                    <p class="stat-value">{{ -1 }}</p>
                 </div>
                 <div class="profile-stat">
                     <p class="stat-title">Followers</p>
-                    <p class="stat-value">{{ "test" }}</p>
+                    <p class="stat-value">{{ -1 }}</p>
                 </div>
                 <div class="profile-stat">
                     <p class="stat-title">Following</p>
-                    <p class="stat-value">{{ "test" }}</p>
+                    <p class="stat-value">{{ -1 }}</p>
                 </div>
             </div>
         </div>
-        <div class="profile-description-container">
-            <p class="profile-description">Test</p>
+        <div class="bio-container">
+            <p class="bio">Placeholder Text</p>
         </div>
+    </div>
+    <div class="profile-post-container">
+        {% for post in posts %}
+            <div class="profile-post">
+                <img src="{{ url_for('static', filename='' + post.photo) }}" alt="Post Image">
+            </div>
+        {% endfor %}
     </div>
 {% endblock content %}
