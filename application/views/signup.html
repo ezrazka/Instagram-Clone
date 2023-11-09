@@ -8,6 +8,21 @@
                 <legend class="">Signup</legend>
 
                 <div class="">
+                    {{ form.username.label(class="") }}
+
+                    {% if form.username.error %}
+                        {{ form.username(class="") }}
+                        <div class="">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.username(class="") }}
+                    {% endif %}
+                </div>
+
+                <div class="">
                     {{ form.fullname.label(class="") }}
 
                     {% if form.fullname.error %}
@@ -19,21 +34,6 @@
                         </div>
                     {% else %}
                         {{ form.fullname(class="") }}
-                    {% endif %}
-                </div>
-
-                <div class="">
-                    {{ form.password.label(class="") }}
-
-                    {% if form.password.error %}
-                        {{ form.password(class="") }}
-                        <div class="">
-                            {% for error in form.password.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.password(class="") }}
                     {% endif %}
                 </div>
 

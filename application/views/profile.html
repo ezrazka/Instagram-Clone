@@ -2,9 +2,10 @@
 
 {% block content %}
     <div class="profile-info">
+        <a href="{{ url_for('edit_profile')}}" class="btn btn-primary">Edit Profile</a>
         <div class="profile-info-top">
             <div class="profile-photo">
-                <img src="../static/images/posts/4b42ead43b.png" alt="Profile Photo">
+                <img src="{{ url_for('static', filename='images/' + current_user.profile_pic) }}" alt="Profile Photo">
             </div>
             <div class="profile-stats">
                 <div class="profile-stat">
@@ -22,7 +23,7 @@
             </div>
         </div>
         <div class="bio-container">
-            <p class="bio">Placeholder Text</p>
+            <p class="bio">{{ current_user.bio }}</p>
         </div>
     </div>
     <div class="profile-post-container">

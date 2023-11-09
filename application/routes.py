@@ -23,7 +23,7 @@ def login():
             login_user(user)
             return redirect(url_for('profile', username=username))
         else:
-            flash('Invalid username or password', 'error')
+            flash('Invalid username or password.', 'error')
 
     return render_template('login.html', title="Login", form=form)
 
@@ -41,6 +41,30 @@ def profile(username):
     posts = current_user.posts
     reverse_posts = posts[::-1]
     return render_template('profile.html', title=f'{current_user.fullname} Profile', posts=reverse_posts)
+
+@app.route('/edit_profile', methods=['GET', 'POST'])
+def edit_profile():
+    form = EditProfileForm()
+
+    if form.validate_on_submit():
+        user = User.query.get(current_user.id)
+        user.username = form.username.data
+        user.fullname = form.fullname.data
+        user.bio = form.bio.data
+        
+        if form.profile_pic.data:
+            pass
+
+        db.session.commit()
+        flash('Profile updated', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+
+    form.username.data = current_user.username
+    form.fullname.data = current_user.fullname
+    form.bio.data = current_user.bio
+
+    return render_template('edit_profile.html', title=f'Edit {current_user.fullname} Profile', form=form)
+
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -65,10 +89,31 @@ def index():
 
     return render_template('index.html', title='Home', form=form, posts=posts)
 
-
-@app.route('/signup')
+@app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
     form = SignUpForm()
+
+    if form.validate_on_submit():
+        username = form.username.data
+        fullname = form.fullname.data
+        email = form.email.data
+        password = form.password.data
+
+        user = User(
+            username=username,
+            fullname=fullname,
+            email=email,
+            password=password
+        )
+        
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        return redirect(url_for('profile', username=username))
+    
     return render_template('signup.html', title='SignUp', form=form)
 
 

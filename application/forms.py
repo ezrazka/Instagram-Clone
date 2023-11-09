@@ -11,18 +11,20 @@ class LoginForm(FlaskForm):
     submit = SubmitField("login")
 
 class SignUpForm(FlaskForm):
-    username = StringField("username", validators=[DataRequired(), Length(min=4, max=12)])
+    username = StringField("username", validators=[DataRequired(), Length(min=4, max=12), exists_username])
     fullname = StringField("full name", validators=[Length(min=4, max=16)])
     email = EmailField("email", validators=[DataRequired(), Email(), exists_email])
     password = PasswordField("password", validators=[DataRequired(), Length(min=8)])
     confirm_password = PasswordField("confirm password", validators=[DataRequired(), EqualTo("password", message="Password must match")])
     submit = SubmitField("sign up")
 
-class EditProfileForm(FlaskForm):
-    username = StringField("username", validators=[DataRequired(), Length(min=4, max=12), exists_username])
-    email = EmailField("email", validators=[DataRequired(), Email(), exists_email])
+class EditProfileForm(SignUpForm):
+    username = StringField("username", validators=[DataRequired(), Length(min=4, max=12)])
+    password = None
+    confirm_password = None
+    email = None
+    bio = StringField("bio")
     profile_pic = FileField("profile picture", validators=[FileAllowed(["jpg", "jpeg", "png"])])
-    password = PasswordField("password", validators=[DataRequired(), Length(min=8)])
     submit = SubmitField("update profile")
 
 class ResetPasswordForm(FlaskForm):
