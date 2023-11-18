@@ -15,7 +15,8 @@ from application.models import User
 def exists_email(form, email):
     user = User.query.filter_by(email=email.data).first()
     if user:
-        raise ValidationError("Email already exists. Please use a different email.")
+        raise ValidationError(
+            "Email already exists. Please use a different email.")
 
 
 def not_exists_email(form, email):
@@ -27,7 +28,8 @@ def not_exists_email(form, email):
 def exists_username(form, username):
     user = User.query.filter_by(username=username.data).first()
     if not user:
-        raise ValidationError("Username already exists. Please use a different username.")
+        raise ValidationError(
+            "Username already exists. Please use a different username.")
 # END OF FORM UTILS
 
 # LOGIN MANAGER UTILS
@@ -41,18 +43,17 @@ def load_user(user_id):
 # IMAGE SAVE UTILS
 
 
-def save_image(form_picture_data):
+def save_image(form_picture_data, folder_name):
     random_hex = secrets.token_hex(5)
+    while any(file.startswith(random_hex) for file in f'images/{folder_name}/'):
+        random_hex = secrets.token_hex(5)
     _, f_ext = os.path.splitext(form_picture_data.filename)
-    picture_fn = 'images/posts/' + random_hex + f_ext
+    file_name = random_hex + f_ext
+    picture_fn = f'images/{folder_name}/' + file_name
     picture_path = os.path.join(current_app.root_path, 'static/', picture_fn)
 
     image = Image.open(form_picture_data)
-    # i_width, i_height = image.size
-    # ratio = i_width / 1000
-    # output_size = (i_width/ratio, i_height/ratio)
-    # image.thumbnail(image)
     image.save(picture_path)
 
-    return picture_fn
+    return file_name
 # END OF IMAGE SAVE UTILS

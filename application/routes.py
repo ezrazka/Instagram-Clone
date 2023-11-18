@@ -1,10 +1,39 @@
-from flask import render_template, redirect, url_for, flash, request
+from flask import render_template, redirect, url_for, flash, request, make_response, jsonify
 from flask_login import login_user, login_required, logout_user, current_user
 
 from application import app
 from application.models import *
 from application.forms import *
 from application.utils import save_image
+
+
+@app.route('/signup', methods=['GET', 'POST'])
+def signup():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
+
+    form = SignUpForm()
+
+    print(form.validate_on_submit())
+    if form.validate_on_submit():
+        username = form.username.data
+        fullname = form.fullname.data
+        email = form.email.data
+        password = form.password.data
+
+        user = User(
+            username=username,
+            fullname=fullname,
+            email=email,
+            password=password
+        )
+        
+        db.session.add(user)
+        db.session.commit()
+        login_user(user)
+        return redirect(url_for('profile', username=username))
+    
+    return render_template('signup.html', title='SignUp', form=form)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -42,6 +71,7 @@ def profile(username):
     reverse_posts = posts[::-1]
     return render_template('profile.html', title=f'{current_user.fullname} Profile', posts=reverse_posts)
 
+
 @app.route('/edit_profile', methods=['GET', 'POST'])
 def edit_profile():
     form = EditProfileForm()
@@ -53,7 +83,7 @@ def edit_profile():
         user.bio = form.bio.data
         
         if form.profile_pic.data:
-            pass
+            user.profile_pic = save_image(form.profile_pic.data, 'profile_pics')
 
         db.session.commit()
         flash('Profile updated', 'success')
@@ -66,6 +96,21 @@ def edit_profile():
     return render_template('edit_profile.html', title=f'Edit {current_user.fullname} Profile', form=form)
 
 
+@app.route('/reset_password', methods=['GET', 'POST'])
+def reset_password():
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        user = User.query.get(current_user.id)
+        user.password = form.new_password.data
+
+        db.session.commit()
+        flash('Password changed', 'success')
+        logout_user()
+        return redirect(url_for('verification_rset_password', username=current_user.username))
+
+    return render_template('reset_password.html', title=f'Change {current_user.fullname} Password', form=form)
+
 
 @app.route('/', methods=['GET', 'POST'])
 @login_required
@@ -77,7 +122,7 @@ def index():
             author_id=current_user.id,
             caption=form.caption.data
         )
-        post.photo = save_image(form.post_pic.data)
+        post.photo = save_image(form.post_pic.data, 'posts')
         db.session.add(post)
         db.session.commit()
         flash('Your image has been posted 🩷!', 'success')
@@ -89,38 +134,27 @@ def index():
 
     return render_template('index.html', title='Home', form=form, posts=posts)
 
-@app.route('/signup', methods=['GET', 'POST'])
-def signup():
-    if current_user.is_authenticated:
-        return redirect(url_for('index'))
-
-    form = SignUpForm()
-
-    if form.validate_on_submit():
-        username = form.username.data
-        fullname = form.fullname.data
-        email = form.email.data
-        password = form.password.data
-
-        user = User(
-            username=username,
-            fullname=fullname,
-            email=email,
-            password=password
-        )
-        
-        db.session.add(user)
-        db.session.commit()
-        login_user(user)
-        return redirect(url_for('profile', username=username))
-    
-    return render_template('signup.html', title='SignUp', form=form)
-
 
 @app.route('/about')
 def about():
     return render_template('about.html', title='About')
 
+
+@app.route('/like', methods=["GET", "POST"])
+@login_required
+def like():
+    data = request.json
+    post_id = int(data['postId'])
+    like = Like.query.filter_by(user_id=current_user.id, post_id=post_id).first()
+    if not like:
+        like = Like(user_id=current_user.id, post_id=post_id)
+        db.session.add(like)
+        db.session.commit()
+        return make_response(jsonify({'status': True}), 200)
+    
+    db.session.delete(like)
+    db.session.commit()
+    return make_response(jsonify({'status': False}), 200)
 
 if __name__ == '__main__':
     app.run(debug=True)

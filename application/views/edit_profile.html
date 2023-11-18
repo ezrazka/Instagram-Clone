@@ -18,7 +18,7 @@
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.profile_pic(class="form-control ") }}
+                    {{ form.profile_pic(class="form-control") }}
                 {% endif %}
 
             </div>
@@ -72,6 +72,9 @@
         </fieldset>
         <div class="">
             {{ form.submit(class="btn btn-outline-info") }}
+            <small class="">
+                <a href="{{ url_for('reset_password') }}">Ingin Ubah Password?</a>
+            </small>
         </div>
     </form>
 </div>

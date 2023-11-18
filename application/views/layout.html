@@ -14,6 +14,22 @@
             padding: 20px;
         }
 
+        .alert {
+            height: 30px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+        }
+
+        .alert-success {
+            background-color: greenyellow;
+        }
+
+        .alert-error {
+            background-color: red;
+        }
+
         section.content {
             min-height: calc(100vh - 100px);
             width: 576px;
@@ -34,6 +50,15 @@
             text-align: center;
         }
 
+        .post-header {
+            display: flex;
+            gap: 10px;
+        }
+
+        .post-header img {
+            border-radius: 50%;
+        }
+
         img {
             width: 200px;
         }
@@ -45,15 +70,12 @@
             margin-bottom: 30px;
         }
 
-        div.profile-info {
-            background-color: aquamarine;
-        }
-
         div.profile-info-top {
-            height: 240px;
+            height: 180px;
             display: flex;
             flex-direction: row;
             justify-content: space-around;
+            align-items: end;
         }
 
         div.profile-photo {
@@ -93,6 +115,17 @@
             font-weight: bold;
         }
 
+        .bio-container {
+            padding-bottom: 80px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        p.fullname {
+            font-weight: bold;
+        }
+
         div.profile-post-container {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
@@ -101,7 +134,7 @@
 
         div.profile-post {
             width: 192px;
-            border: 1px solid black;
+            border: 1px solid white;
         }
 
         div.profile-post img {
@@ -116,23 +149,23 @@
     {% endif %}
 </head>
 <body>
+    <div class="alert-box">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+    </div>
     <section class="content">
         {% if current_user.is_authenticated %}
             {% include "components/login-header.html" %}
         {% else %}
             {% include "components/logout-header.html" %}
         {% endif %}
-        <div class="alert-box">
-            {% with messages = get_flashed_messages(with_categories=true) %}
-                {% if messages %}
-                    {% for category, message in messages %}
-                        <div class="alert alert-{{ category }}">
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}
-            {% endwith %}
-        </div>
         {% block content %}{% endblock %}
         {% include "components/footer.html" %}
     </section>
