@@ -31,7 +31,7 @@ def signup():
         db.session.add(user)
         db.session.commit()
         login_user(user)
-        return redirect(url_for('profile', username=username))
+        return redirect(url_for('profile', username=current_user.username))
     
     return render_template('signup.html', title='SignUp', form=form)
 
@@ -50,7 +50,7 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and password == user.password:
             login_user(user)
-            return redirect(url_for('profile', username=username))
+            return redirect(url_for('profile', username=current_user.username))
         else:
             flash('Invalid username or password.', 'error')
 
@@ -73,6 +73,7 @@ def profile(username):
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
+@login_required
 def edit_profile():
     form = EditProfileForm()
 
@@ -97,6 +98,7 @@ def edit_profile():
 
 
 @app.route('/reset_password', methods=['GET', 'POST'])
+@login_required
 def reset_password():
     form = ResetPasswordForm()
 
@@ -107,9 +109,53 @@ def reset_password():
         db.session.commit()
         flash('Password changed', 'success')
         logout_user()
-        return redirect(url_for('verification_rset_password', username=current_user.username))
+        return redirect(url_for('profile', username=current_user.username))
 
-    return render_template('reset_password.html', title=f'Change {current_user.fullname} Password', form=form)
+    return render_template('reset_password.html', title=f'Verification Reset {current_user.fullname} Password', form=form)
+
+@app.route('/verification_reset_password/<string:user_id>', methods=['GET', 'POST'])
+def verification_reset_password(user_id):
+    form = VerificationResetPasswordForm()
+
+    user = User.query.filter_by(id=user_id).first()
+    if form.validate_on_submit():
+        user.password = form.new_password.data
+
+        db.session.commit()
+        flash('Password changed', 'success')
+        return redirect(url_for('profile', username=user.username))
+
+    return render_template('verification_reset_password.html', title=f'Verification Reset {user.fullname} Password', form=form)
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    form = ForgotPasswordForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+
+        user = User.query.filter_by(email=email).first()
+        return redirect(url_for('verification_reset_password', user_id=user.id))
+
+    return render_template('forgot_password.html', title='Forgot Password', form=form)
+
+@app.route('/edit_post/<string:post_hex>', methods=['GET', 'POST'])
+@login_required
+def edit_post(post_hex):
+    form = EditPostForm()
+
+    post = Post.query.filter_by(photo=f"{post_hex}.png").first()
+
+    if form.validate_on_submit():
+        post.caption = form.caption.data
+        
+        db.session.commit()
+        flash('Your post has been successfully edited 🩷!', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+    
+    form.caption.data = post.caption
+    
+    return render_template('edit_post.html', title=f'Edit {current_user.fullname} Post', form=form)
 
 
 @app.route('/', methods=['GET', 'POST'])

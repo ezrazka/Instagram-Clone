@@ -31,7 +31,9 @@
                         <img src="{{ url_for('static', filename='images/profile_pics/' + post.posts_owner.profile_pic ) }}" alt="Post Owner" style="height: 30px; width: 30px;">
                         <h2>{{ post.posts_owner.username }}</h2>
                     </div>
-                    <img src="{{ url_for('static', filename='images/posts/' + post.photo) }}" alt="Post Image">
+                    <a href="{{ url_for('edit_post', post_hex=post.photo[:-4]) }}">
+                        <img src="{{ url_for('static', filename='images/posts/' + post.photo) }}" alt="Post Image">
+                    </a>
                     <p>{{ post.caption }}</p>
 
                     <div class="post-footer">

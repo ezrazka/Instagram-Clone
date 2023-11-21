@@ -27,14 +27,17 @@ def not_exists_email(form, email):
 
 def exists_username(form, username):
     user = User.query.filter_by(username=username.data).first()
-    if not user:
+    if user:
         raise ValidationError(
             "Username already exists. Please use a different username.")
+
+def not_exists_username(form, username):
+    user = User.query.filter_by(username=username.data).first()
+    if not user:
+        raise ValidationError("User not found.")
 # END OF FORM UTILS
 
 # LOGIN MANAGER UTILS
-
-
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))

@@ -3,10 +3,10 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, EmailField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
-from application.utils import exists_email, not_exists_email, exists_username
+from application.utils import exists_email, not_exists_email, exists_username, not_exists_username
 
 class LoginForm(FlaskForm):
-    username = StringField("username", validators=[DataRequired()])
+    username = StringField("username", validators=[DataRequired(), not_exists_username])
     password = PasswordField("password", validators=[DataRequired()])
     submit = SubmitField("login")
 
@@ -35,13 +35,13 @@ class ResetPasswordForm(FlaskForm):
 
 class VerificationResetPasswordForm(FlaskForm):
     new_password = PasswordField("new password", validators=[DataRequired(), Length(min=8)])
-    confirm_new_password = PasswordField("confirm new password", validators=[DataRequired(), Length(min=8), EqualTo("password", message="Password must match")])
+    confirm_new_password = PasswordField("confirm new password", validators=[DataRequired(), Length(min=8), EqualTo("new_password", message="Password must match")])
     submit = SubmitField("reset password")
 
 class ForgotPasswordForm(FlaskForm):
     email = PasswordField("email", validators=[DataRequired(), not_exists_email])
-    recaptcha = RecaptchaField()
-    submit = SubmitField("semd link verification to email")
+    # recaptcha = RecaptchaField()
+    submit = SubmitField("send link verification to email")
 
 class CreatePostForm(FlaskForm):
     post_pic = FileField("picture", validators=[DataRequired(), FileAllowed(["jpg", "jpeg", "png"])])
