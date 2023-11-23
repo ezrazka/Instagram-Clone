@@ -40,48 +40,50 @@
 
     <div class="post-container">
         {% for post in posts %}
-            <div class="post" style="border: 1px black solid; margin: 10px 0px;">
+            <div class="post">
                 <div class="post-header">
-                    <img src="{{ url_for('static', filename='images/profile_pics/' + post.posts_owner.profile_pic ) }}" alt="Post Owner" style="height: 30px; width: 30px;">
-                    <h2>{{ post.posts_owner.username }}</h2>
+                    <img src="{{ url_for('static', filename='images/profile_pics/' + post.posts_owner.profile_pic) }}" alt="Post Owner">
+                    <p>{{ post.posts_owner.username }}</p>
                 </div>
-                <a href="{{ url_for('edit_post', post_hex=post.photo[:-4]) }}">
-                    <img src="{{ url_for('static', filename='images/posts/' + post.photo) }}" alt="Post Image">
-                </a>
-                <p>{{ post.caption }}</p>
-
+                <img src="{{ url_for('static', filename='images/posts/' + post.photo) }}" alt="Post Image">
                 <div class="post-footer">
-                    <span id="like-btn" data-post-id="{{ post.id }}">❤️</span><span id="like-counter">{{ post.likes | length }}</span>
-                    <span id="comment-btn" data-post-id="{{ post.id }}">💬</span><span id="comment-counter">{{ post.commentsx | length }}</span>
+                    <div class="interactions">
+                        <span id="like-btn" data-post-id="{{ post.id }}">
+                            {% if current_user.id in post.likes | map(attribute='user_id') %}
+                                <i class="fa fa-heart liked"></i>
+                            {% else %}
+                                <i class="fa fa-heart-o"></i>
+                            {% endif %}
+                        </span>
+                        <span id="comment-btn" data-post-id="{{ post.id }}">
+                            <i class="fa fa-comment-o"></i>
+                        </span>
+                    </div>
+                    {% if post.likes | length == 1 %}
+                        <p class="like-counter">1 like</p>
+                    {% else %}
+                        <p class="like-counter">{{ post.likes | length }} likes</p>
+                    {% endif %}
+                    <p><span class="username">{{ post.posts_owner.username }}</span> {{ post.caption }}</p>
+                    {% if post.likes | length > 1 %}
+                        <p class="view-comments">View all {{ post.likes | length }} comments</p>
+                    {% endif %}
+                    {% if post.likes | length == 1 %}
+                        <p class="view-comments">View 1 comment</p>
+                    {% endif %}
                 </div>
             </div>
         {% endfor %}
     </div>
-    <script>
-        document.querySelectorAll("#like-btn").forEach(btn => {
-            btn.addEventListener("click", function() {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'http://127.0.0.1:5000/like', true);
-                xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
-
-                xhr.onload = () => {
-                    if (xhr.status === 200) {
-                        const response = JSON.parse(xhr.responseText);
-                        console.log(response.status);
-                    }
-                }
-                const data = JSON.stringify({ 'postId': this.dataset.postId });
-                xhr.send(data)
-            });
-        });
-    </script>
     <div class="pagination-box">
         {% for page_number in posts.iter_pages() %}
-            {% if page_number == posts.page %}
-                <a href="{{ url_for('index', page=page_number) }}" style="color: red;">{{ page_number }}</a>
-            {% else %}
-                <a href="{{ url_for('index', page=page_number) }}" style="color: black;">{{ page_number }}</a>
-            {% endif %}
+            <a href="{{ url_for('index', page=page_number) }}" class="page-circle">
+                {% if page_number == posts.page %}
+                    <p class="current">{{ page_number }}</p>
+                {% else %}
+                    <p>{{ page_number }}</p>
+                {% endif %}
+            </a>
         {% endfor %}
     </div>
 {% endblock content %}
