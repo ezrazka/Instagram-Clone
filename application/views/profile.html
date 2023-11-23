@@ -2,9 +2,6 @@
 
 {% block content %}
     <div class="profile-info">
-        {% if user == current_user %}
-            <a href="{{ url_for('edit_profile')}}" class="btn btn-primary">Edit Profile</a>
-        {% endif %}
         <div class="profile-info-top">
             <div class="profile-photo">
                 <img src="{{ url_for('static', filename='images/profile_pics/' + user.profile_pic) }}" alt="Profile Photo">
@@ -30,7 +27,17 @@
                 <p class="bio">{{ user.bio }}</p>
             {% endif %}
         </div>
-        <div id="follow-btn">Follow</div>
+        {% if user == current_user %}
+            <a href="{{ url_for('edit_profile') }}">
+                <div class="edit-profile">Edit Profile</div>
+            </a>
+        {% else %}
+            {% if current_user.id in user.follower_users | map(attribute='following_id') %}
+                <div id="follow-btn" class="followed" data-user-id="{{ user.id }}">Following</div>
+            {% else %}
+                <div id="follow-btn" data-user-id="{{ user.id }}">Follow</div>
+            {% endif %}
+        {% endif %}
     </div>
     <a href="{{ url_for('posts', username=user.username) }}">
         <div class="profile-post-container">

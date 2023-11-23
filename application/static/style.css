@@ -96,10 +96,6 @@ header ul.nav li a {
     font-size: larger;
 }
 
-header ul.nav li a:hover {
-    text-decoration: underline;
-}
-
 main {
     display: flex;
     flex-direction: column;
@@ -271,6 +267,7 @@ main {
     border-radius: 50%;
     width: 30px;
     height: 30px;
+    border: 1px solid gainsboro;
 }
 
 .post > img,
@@ -359,15 +356,6 @@ main {
     gap: 10px;
 }
 
-.profile-info a {
-    text-decoration: none;
-    color: black;
-}
-
-.profile-info a:hover {
-    text-decoration: underline;
-}
-
 .profile-info-top {
     height: 120px;
     display: flex;
@@ -388,6 +376,7 @@ main {
     width: 100px;
     height: 100px;
     border-radius: 50%;
+    border: 1px solid gainsboro;
 }
 
 .profile-stats {
@@ -439,10 +428,35 @@ p.fullname {
     justify-content: center;
     align-items: center;
     border-radius: 10px;
+    user-select: none;
 }
 
 #follow-btn:hover {
     cursor: pointer;
+}
+
+#follow-btn.followed {
+    background-color: whitesmoke;
+    border: 1px solid gainsboro;
+    color: black;
+}
+
+a:has(.edit-profile) {
+    text-decoration: none;
+}
+
+.edit-profile {
+    background-color: gainsboro;
+    border: 1px solid lightgray;
+    color: black;
+    width: 150px;
+    height: 32px;
+    padding: 5px;
+    margin-block: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
 }
 
 .profile-post-container {

@@ -239,21 +239,21 @@ def like():
     db.session.commit()
     return make_response(jsonify({'status': False}), 200)
 
-# @app.route('/follow', methods=["GET", "POST"])
-# @login_required
-# def follow():
-#     data = request.json
-#     user_id = int(data['userId'])
-#     like = Like.query.filter_by(user_id=user_id, user_id=user_id).first()
-#     if not like:
-#         like = Like(user_id=user_id post_id=user_id)
-#         db.session.add(like)
-#         db.session.commit()
-#         return make_response(jsonify({'status': True}), 200)
+@app.route('/follow', methods=["GET", "POST"])
+@login_required
+def follow():
+    data = request.json
+    user_id = int(data['userId'])
+    relation = Relation.query.filter_by(follower_id=user_id, following_id=current_user.id).first()
+    if not relation:
+        relation = Relation(follower_id=user_id, following_id=current_user.id)
+        db.session.add(relation)
+        db.session.commit()
+        return make_response(jsonify({'status': True}), 200)
     
-#     db.session.delete(like)
-#     db.session.commit()
-#     return make_response(jsonify({'status': False}), 200)
+    db.session.delete(relation)
+    db.session.commit()
+    return make_response(jsonify({'status': False}), 200)
 
 
 if __name__ == '__main__':
