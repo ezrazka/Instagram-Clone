@@ -6,7 +6,7 @@
         <form action="" method="post">
             {{ form.hidden_tag() }}
             <fieldset class="">
-                <div class="">
+                <div class="form-group">
                     {{ form.username(class="") }}
 
                     {% if form.username.error %}
@@ -18,7 +18,7 @@
                     {% endif %}
                 </div>
 
-                <div class="">
+                <div class="form-group">
                     {{ form.password(class="") }}
 
                     {% if form.password.error %}

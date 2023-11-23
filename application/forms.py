@@ -18,36 +18,34 @@ class SignUpForm(FlaskForm):
     confirm_password = PasswordField("confirm password", validators=[DataRequired(), EqualTo("password", message="Password must match")], render_kw={"placeholder": "Confirm password"})
     submit = SubmitField("sign up")
 
-class EditProfileForm(SignUpForm):
-    username = StringField("username", validators=[DataRequired(), Length(min=4, max=12)])
-    password = None
-    confirm_password = None
-    email = None
-    bio = StringField("bio")
+class EditProfileForm(FlaskForm):
+    username = StringField("username", validators=[DataRequired(), Length(min=4, max=12)], render_kw={"placeholder": "Enter your username"})
+    fullname = StringField("full name", validators=[Length(min=4, max=16)], render_kw={"placeholder": "Enter your full name"})
+    bio = TextAreaField("bio", render_kw={"placeholder": "Enter your bio"})
     profile_pic = FileField("profile picture", validators=[FileAllowed(["jpg", "jpeg", "png"])])
     submit = SubmitField("update profile")
 
 class ResetPasswordForm(FlaskForm):
-    old_password = PasswordField("old password", validators=[DataRequired(), Length(min=8)])
-    new_password = PasswordField("new password", validators=[DataRequired(), Length(min=8)])
-    confirm_new_password = PasswordField("confirm new password", validators=[DataRequired(), Length(min=8), EqualTo("new_password", message="Password must match")])
+    old_password = PasswordField("old password", validators=[DataRequired(), Length(min=8)], render_kw={"placeholder": "Old password"})
+    new_password = PasswordField("new password", validators=[DataRequired(), Length(min=8)], render_kw={"placeholder": "New password"})
+    confirm_new_password = PasswordField("confirm new password", validators=[DataRequired(), Length(min=8), EqualTo("new_password", message="Password must match")], render_kw={"placeholder": "Confirm new password"})
     submit = SubmitField("reset password")
 
 class VerificationResetPasswordForm(FlaskForm):
-    new_password = PasswordField("new password", validators=[DataRequired(), Length(min=8)])
-    confirm_new_password = PasswordField("confirm new password", validators=[DataRequired(), Length(min=8), EqualTo("new_password", message="Password must match")])
+    new_password = PasswordField("new password", validators=[DataRequired(), Length(min=8)], render_kw={"placeholder": "New password"})
+    confirm_new_password = PasswordField("confirm new password", validators=[DataRequired(), Length(min=8), EqualTo("new_password", message="Password must match")], render_kw={"placeholder": "Confirm new password"})
     submit = SubmitField("reset password")
 
 class ForgotPasswordForm(FlaskForm):
-    email = PasswordField("email", validators=[DataRequired(), not_exists_email])
+    email = PasswordField("email", validators=[DataRequired(), not_exists_email], render_kw={"placeholder": "Enter a valid email address"})
     # recaptcha = RecaptchaField()
     submit = SubmitField("send link verification to email")
 
 class CreatePostForm(FlaskForm):
-    post_pic = FileField("picture", validators=[DataRequired(), FileAllowed(["jpg", "jpeg", "png"])])
-    caption = TextAreaField("caption")
+    post_pic = FileField("post picture", validators=[DataRequired(), FileAllowed(["jpg", "jpeg", "png"])])
+    caption = TextAreaField("caption", render_kw={"placeholder": "Write a caption"})
     submit = SubmitField("post")
 
 class EditPostForm(FlaskForm):
-    caption = StringField("caption")
+    caption = StringField("caption", render_kw={"placeholder": "Write a caption"})
     submit = SubmitField("update post")

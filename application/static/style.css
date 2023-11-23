@@ -15,11 +15,14 @@ body {
 }
 
 .alert {
+    position: absolute;
+    width: 100%;
     height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-weight: bold;
+    opacity: 85%;
 }
 
 .alert-success {
@@ -112,9 +115,19 @@ main {
     gap: 10px;
 }
 
-.form-container input[type="text"],
-.form-container input[type="password"],
-.form-container input[type="email"] {
+.form-group {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.form-group label {
+    text-transform: capitalize;
+}
+
+.form-group input[type="text"],
+.form-group input[type="password"],
+.form-group input[type="email"] {
     border: 1px solid lightslategray;
     width: 240px;
     height: 32px;
@@ -122,20 +135,43 @@ main {
     padding: 10px;
 }
 
-.form-container input[type="text"]:focus,
-.form-container input[type="password"]:focus,
-.form-container input[type="email"]:focus {
+.form-group input[type="text"]:focus,
+.form-group input[type="password"]:focus,
+.form-group input[type="email"]:focus {
     outline: none;
     border-color: black;
 }
 
-.form-container input[type="text"]:focus::placeholder,
-.form-container input[type="password"]:focus::placeholder,
-.form-container input[type="email"]:focus::placeholder {
+.form-group input[type="text"]:focus::placeholder,
+.form-group input[type="password"]:focus::placeholder,
+.form-group input[type="email"]:focus::placeholder {
     color: transparent;
 }
 
-.form-container input[type="submit"] {
+.form-group textarea {
+    resize: none;
+    border: 1px solid lightslategray;
+    width: 240px;
+    height: 64px;
+    background-color: #f0f0f0;
+    padding: 10px;
+}
+
+.form-group textarea:focus {
+    outline: none;
+    border-color: black;
+}
+
+.form-group textarea:focus::placeholder {
+    color: transparent;
+}
+
+.form-group input[type="file"] {
+    width: 180px;
+    margin-top: 10px;
+}
+
+.form-container fieldset input[type="submit"] {
     height: 32px;
     width: 240px;
     border: none;

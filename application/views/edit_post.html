@@ -1,33 +1,25 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <div class="">
+    <div class="form-container">
+        <h1>Edit Post</h1>
         <form action="" method="post">
             {{ form.hidden_tag() }}
             <fieldset class="">
-                <legend class="">Edit Post</legend>
-
-                <div class="">
-                    {{ form.caption.label(class="") }}
+                <div class="form-group">
+                    {{ form.caption(class="") }}
 
                     {% if form.caption.error %}
-                        {{ form.caption(class="") }}
                         <div class="">
                             {% for error in form.caption.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
-                    {% else %}
-                        {{ form.caption(class="") }}
                     {% endif %}
                 </div>
-            </fieldset>
-            <div class="">
+                
                 {{ form.submit(class="btn btn-outline-info") }}
-                <small class="">
-                    <a href="#">Lupa Kata Sandi?</a>
-                </small>
-            </div>
+            </fieldset>
         </form>
     </div>
 {% endblock content %}

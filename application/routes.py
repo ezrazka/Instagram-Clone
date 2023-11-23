@@ -16,16 +16,11 @@ def signup():
 
     print(form.validate_on_submit())
     if form.validate_on_submit():
-        username = form.username.data
-        fullname = form.fullname.data
-        email = form.email.data
-        password = form.password.data
-
         user = User(
-            username=username,
-            fullname=fullname,
-            email=email,
-            password=password
+            username=form.username.data,
+            fullname=form.fullname.data,
+            email=form.email.data,
+            password=form.password.data
         )
         
         db.session.add(user)
@@ -138,6 +133,25 @@ def forgot_password():
         return redirect(url_for('verification_reset_password', user_id=user.id))
 
     return render_template('forgot_password.html', title='Forgot Password', form=form)
+
+@app.route('/create_post', methods=['GET', 'POST'])
+@login_required
+def create_post():
+    form = CreatePostForm()
+
+    if form.validate_on_submit():
+        post = Post(
+            post_pic=form.post_pic.data,
+            caption=form.caption.data
+        )
+        
+        db.session.add(post)
+        db.session.commit()
+        flash('Your post has been successfully uploaded 🩷!', 'success')
+        return redirect(url_for('profile', username=current_user.username))
+    
+    
+    return render_template('create_post.html', title=f'Create {current_user.fullname} Post', form=form)
 
 @app.route('/edit_post/<string:post_hex>', methods=['GET', 'POST'])
 @login_required
