@@ -5,6 +5,10 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+::-webkit-scrollbar {
+	width: 0;
+}
+
 body {
     width: 100vw;
     height: max(600px, 100vh);
@@ -12,6 +16,10 @@ body {
     justify-content: center;
     align-items: center;
     background-color: black;
+}
+
+img {
+    object-fit: cover;
 }
 
 .alert {
@@ -40,17 +48,20 @@ body {
     background-color: white;
     display: flex;
     flex-direction: column;
-}
-
-header img {
-    width: 32px;
-    height: 32px;
+    overflow: scroll;
+    overflow-x: hidden;
 }
 
 header {
     display: flex;
     align-items: center;
-    margin: 10px 20px;
+    padding: 10px 20px;
+    border-bottom: 1px solid gainsboro;
+}
+
+header img {
+    width: 32px;
+    height: 32px;
 }
 
 header ul.nav {
@@ -171,7 +182,7 @@ main {
     margin-top: 10px;
 }
 
-.form-container fieldset input[type="submit"] {
+.form-group input[type="submit"] {
     height: 32px;
     width: 240px;
     border: none;
@@ -210,6 +221,22 @@ main {
     list-style: none;
 }
 
+.home-form-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+}
+
+.home-form-container fieldset {
+    border: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
 .new-post-box {
     padding: 5px;
 }
@@ -227,7 +254,18 @@ main {
 
 .post-header img {
     border-radius: 50%;
-    width: 200px;
+    width: 80px;
+    height: 80px;
+}
+
+.post a {
+    width: 100%;
+    height: 100%;
+}
+
+.post a img {
+    width: 100%;
+    height: 100%;
 }
 
 .pagination-box {
@@ -237,8 +275,24 @@ main {
     margin-bottom: 30px;
 }
 
+.profile-info {
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.profile-info a {
+    text-decoration: none;
+    color: black;
+}
+
+.profile-info a:hover {
+    text-decoration: underline;
+}
+
 .profile-info-top {
-    height: 180px;
+    height: 130px;
     display: flex;
     flex-direction: row;
     justify-content: space-around;
@@ -249,14 +303,13 @@ main {
     display: flex;
     flex: 25%;
     justify-content: center;
-    align-items: flex-start;
-    padding-top: 64px;
-    padding-left: 80px;
+    align-items: center;
+    padding-inline: 10px;
 }
 
 .profile-photo img {
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
     border-radius: 50%;
 }
 
@@ -266,13 +319,12 @@ main {
     flex-direction: row;
     justify-content: space-evenly;
     align-items: flex-start;
-    padding-top: 100px;
-    padding-inline: 20px;
     font-size: larger;
+    padding-bottom: 30px;
 }
 
 .profile-stat {
-    width: 50px;
+    width: max-content;
     display: flex;
     flex-direction: column-reverse;
     align-items: center;
@@ -280,13 +332,19 @@ main {
 
 p.stat-title {
     font-weight: bold;
+    font-size: medium;
 }
 
 .bio-container {
-    padding-bottom: 80px;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+    height: max-content;
+    font-size: small;
+}
+
+.bio-container .fullname {
+    font-size: 14px;
 }
 
 p.fullname {
@@ -296,12 +354,13 @@ p.fullname {
 .profile-post-container {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-template-rows: repeat(3, 1fr);
+    border-top: 1px solid gainsboro;
 }
 
 .profile-post {
-    width: 192px;
-    border: 1px solid white;
+    width: 133.3333px;
+    /* border: 1px solid white; */
+    border: 1px solid gainsboro;
 }
 
 .profile-post img {
@@ -311,8 +370,9 @@ p.fullname {
 
 footer {
     width: 100%;
-    padding: 10px;
+    padding-block: 10px;
     justify-self: center;
+    border-top: 1px solid gainsboro;
 }
 
 footer p {

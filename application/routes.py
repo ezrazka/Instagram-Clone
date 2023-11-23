@@ -7,14 +7,49 @@ from application.forms import *
 from application.utils import save_image
 
 
+@app.route('/', methods=['GET', 'POST'])
+@login_required
+def index():
+    form = CreatePostForm()
+
+    if form.validate_on_submit():
+        post = Post(
+            author_id=current_user.id,
+            caption=form.caption.data
+        )
+        post.photo = save_image(form.post_pic.data, 'posts')
+        db.session.add(post)
+        db.session.commit()
+        flash('Your image has been posted 🩷!', 'success')
+
+    page = request.args.get('page', 1, type=int)
+    posts = Post.query\
+        .order_by(Post.post_date.desc())\
+        .paginate(page=page, per_page=3)
+
+    return render_template('index.html', title='Home', form=form, posts=posts)
+
+
+@app.route('/about')
+def about():
+    return render_template('about.html', title='About')
+
+
+@app.route('/<string:username>')
+@login_required
+def profile(username):
+    posts = current_user.posts
+    reverse_posts = posts[::-1]
+    return render_template('profile.html', title=f'{current_user.fullname} Profile', posts=reverse_posts)
+
+
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
         return redirect(url_for('index'))
 
     form = SignUpForm()
-
-    print(form.validate_on_submit())
+    
     if form.validate_on_submit():
         user = User(
             username=form.username.data,
@@ -59,12 +94,49 @@ def logout():
     return redirect(url_for('login'))
 
 
-@app.route('/<string:username>')
+@app.route('/reset_password', methods=['GET', 'POST'])
 @login_required
-def profile(username):
-    posts = current_user.posts
-    reverse_posts = posts[::-1]
-    return render_template('profile.html', title=f'{current_user.fullname} Profile', posts=reverse_posts)
+def reset_password():
+    form = ResetPasswordForm()
+
+    if form.validate_on_submit():
+        user = User.query.get(current_user.id)
+        user.password = form.new_password.data
+
+        db.session.commit()
+        flash('Password changed', 'success')
+        logout_user()
+        return redirect(url_for('profile', username=current_user.username))
+
+    return render_template('reset_password.html', title=f'Verification Reset {current_user.fullname} Password', form=form)
+
+
+@app.route('/forgot_password', methods=['GET', 'POST'])
+def forgot_password():
+    form = ForgotPasswordForm()
+
+    if form.validate_on_submit():
+        email = form.email.data
+
+        user = User.query.filter_by(email=email).first()
+        return redirect(url_for('verification_reset_password', user_id=user.id))
+
+    return render_template('forgot_password.html', title='Forgot Password', form=form)
+
+
+@app.route('/verification_reset_password/<string:user_id>', methods=['GET', 'POST'])
+def verification_reset_password(user_id):
+    form = VerificationResetPasswordForm()
+
+    user = User.query.filter_by(id=user_id).first()
+    if form.validate_on_submit():
+        user.password = form.new_password.data
+
+        db.session.commit()
+        flash('Password changed', 'success')
+        return redirect(url_for('profile', username=user.username))
+
+    return render_template('verification_reset_password.html', title=f'Verification Reset {user.fullname} Password', form=form)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -92,48 +164,6 @@ def edit_profile():
     return render_template('edit_profile.html', title=f'Edit {current_user.fullname} Profile', form=form)
 
 
-@app.route('/reset_password', methods=['GET', 'POST'])
-@login_required
-def reset_password():
-    form = ResetPasswordForm()
-
-    if form.validate_on_submit():
-        user = User.query.get(current_user.id)
-        user.password = form.new_password.data
-
-        db.session.commit()
-        flash('Password changed', 'success')
-        logout_user()
-        return redirect(url_for('profile', username=current_user.username))
-
-    return render_template('reset_password.html', title=f'Verification Reset {current_user.fullname} Password', form=form)
-
-@app.route('/verification_reset_password/<string:user_id>', methods=['GET', 'POST'])
-def verification_reset_password(user_id):
-    form = VerificationResetPasswordForm()
-
-    user = User.query.filter_by(id=user_id).first()
-    if form.validate_on_submit():
-        user.password = form.new_password.data
-
-        db.session.commit()
-        flash('Password changed', 'success')
-        return redirect(url_for('profile', username=user.username))
-
-    return render_template('verification_reset_password.html', title=f'Verification Reset {user.fullname} Password', form=form)
-
-@app.route('/forgot_password', methods=['GET', 'POST'])
-def forgot_password():
-    form = ForgotPasswordForm()
-
-    if form.validate_on_submit():
-        email = form.email.data
-
-        user = User.query.filter_by(email=email).first()
-        return redirect(url_for('verification_reset_password', user_id=user.id))
-
-    return render_template('forgot_password.html', title='Forgot Password', form=form)
-
 @app.route('/create_post', methods=['GET', 'POST'])
 @login_required
 def create_post():
@@ -150,8 +180,8 @@ def create_post():
         flash('Your post has been successfully uploaded 🩷!', 'success')
         return redirect(url_for('profile', username=current_user.username))
     
-    
     return render_template('create_post.html', title=f'Create {current_user.fullname} Post', form=form)
+
 
 @app.route('/edit_post/<string:post_hex>', methods=['GET', 'POST'])
 @login_required
@@ -170,34 +200,6 @@ def edit_post(post_hex):
     form.caption.data = post.caption
     
     return render_template('edit_post.html', title=f'Edit {current_user.fullname} Post', form=form)
-
-
-@app.route('/', methods=['GET', 'POST'])
-@login_required
-def index():
-    form = CreatePostForm()
-
-    if form.validate_on_submit():
-        post = Post(
-            author_id=current_user.id,
-            caption=form.caption.data
-        )
-        post.photo = save_image(form.post_pic.data, 'posts')
-        db.session.add(post)
-        db.session.commit()
-        flash('Your image has been posted 🩷!', 'success')
-
-    page = request.args.get('page', 1, type=int)
-    posts = Post.query.filter_by(author_id=current_user.id)\
-        .order_by(Post.post_date.desc())\
-        .paginate(page=page, per_page=3)
-
-    return render_template('index.html', title='Home', form=form, posts=posts)
-
-
-@app.route('/about')
-def about():
-    return render_template('about.html', title='About')
 
 
 @app.route('/like', methods=["GET", "POST"])

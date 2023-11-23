@@ -10,8 +10,6 @@ from application import login_manager
 from application.models import User
 
 # FORM UTILS
-
-
 def exists_email(form, email):
     user = User.query.filter_by(email=email.data).first()
     if user:
@@ -44,8 +42,6 @@ def load_user(user_id):
 # END OF LOGIN MANAGER UTILS
 
 # IMAGE SAVE UTILS
-
-
 def save_image(form_picture_data, folder_name):
     random_hex = secrets.token_hex(5)
     while any(file.startswith(random_hex) for file in f'images/{folder_name}/'):
