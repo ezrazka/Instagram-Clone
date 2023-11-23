@@ -38,15 +38,32 @@ def about():
 @app.route('/<string:username>')
 @login_required
 def profile(username):
-    posts = current_user.posts
+    user = User.query.filter_by(username=username).first()
+    posts = user.posts
     reverse_posts = posts[::-1]
-    return render_template('profile.html', title=f'{current_user.fullname} Profile', posts=reverse_posts)
+    return render_template('profile.html', title=f'{user.fullname} Profile', posts=reverse_posts, user=user)
+
+
+@app.route('/<username>/posts')
+@login_required
+def posts(username):
+    page = request.args.get('page', 1, type=int)
+    user = User.query.filter_by(username=username).first()
+    posts = Post.query.filter_by(author_id=user.id)\
+        .order_by(Post.post_date.desc())\
+        .paginate(page=page, per_page=3)
+    
+    if posts.total == 0:
+        flash('This user currently has no posts.', 'error')
+        return redirect(url_for('profile', username=username))
+
+    return render_template('posts.html', title='Home', posts=posts, user=user)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('profile', username=current_user.username))
 
     form = SignUpForm()
     
@@ -69,7 +86,7 @@ def signup():
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('profile', username=current_user.username))
 
     form = LoginForm()
 
@@ -134,7 +151,7 @@ def verification_reset_password(user_id):
 
         db.session.commit()
         flash('Password changed', 'success')
-        return redirect(url_for('profile', username=user.username))
+        return redirect(url_for('profile', username=current_user.username))
 
     return render_template('verification_reset_password.html', title=f'Verification Reset {user.fullname} Password', form=form)
 
@@ -183,12 +200,16 @@ def create_post():
     return render_template('create_post.html', title=f'Create {current_user.fullname} Post', form=form)
 
 
-@app.route('/edit_post/<string:post_hex>', methods=['GET', 'POST'])
+@app.route('/edit_post/<int:post_id>', methods=['GET', 'POST'])
 @login_required
-def edit_post(post_hex):
+def edit_post(post_id):
     form = EditPostForm()
 
-    post = Post.query.filter_by(photo=f"{post_hex}.png").first()
+    post = Post.query.filter_by(id=post_id).first()
+
+    if current_user.id != post.author_id:
+        flash('You do not own this post.', 'error')
+        return redirect(url_for('profile', username=current_user.username))
 
     if form.validate_on_submit():
         post.caption = form.caption.data
@@ -217,6 +238,23 @@ def like():
     db.session.delete(like)
     db.session.commit()
     return make_response(jsonify({'status': False}), 200)
+
+# @app.route('/follow', methods=["GET", "POST"])
+# @login_required
+# def follow():
+#     data = request.json
+#     user_id = int(data['userId'])
+#     like = Like.query.filter_by(user_id=user_id, user_id=user_id).first()
+#     if not like:
+#         like = Like(user_id=user_id post_id=user_id)
+#         db.session.add(like)
+#         db.session.commit()
+#         return make_response(jsonify({'status': True}), 200)
+    
+#     db.session.delete(like)
+#     db.session.commit()
+#     return make_response(jsonify({'status': False}), 200)
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,46 +1,9 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <div class="home-form-container">
-        <h2>Create a New Post</h2>
-        <form method="post" enctype="multipart/form-data">
-            {{ form.hidden_tag() }}
-            <fieldset class="">
-                <div class="form-group">
-                    {{ form.post_pic.label }}
-                    {{ form.post_pic(class="") }}
-    
-                    {% if form.post_pic.error %}
-                        <div class="">
-                            {% for error in form.post_pic.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-    
-                <div class="form-group">
-                    {{ form.caption(class="") }}
-    
-                    {% if form.caption.error %}
-                        <div class="">
-                            {% for error in form.caption.errors %}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% endif %}
-                </div>
-            
-                <div class="form-group">
-                    {{ form.submit(class="btn btn-outline-info") }}
-                </div>
-            </fieldset>
-        </form>
-    </div>
-
     <div class="post-container">
         {% for post in posts %}
-            <div class="post">
+            <div id="{{ post.id }}" class="post">
                 <div class="post-header">
                     <a href="{{ url_for('profile', username=post.posts_owner.username) }}">
                         <img src="{{ url_for('static', filename='images/profile_pics/' + post.posts_owner.profile_pic) }}" alt="Post Owner">
@@ -85,7 +48,7 @@
     </div>
     <div class="pagination-box">
         {% for page_number in posts.iter_pages() %}
-            <a href="{{ url_for('index', page=page_number) }}" class="page-circle">
+            <a href="{{ url_for('posts', page=page_number, username=user.username) }}" class="page-circle">
                 {% if page_number == posts.page %}
                     <p class="current">{{ page_number }}</p>
                 {% else %}

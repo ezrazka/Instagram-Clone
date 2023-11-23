@@ -37,3 +37,34 @@ document.querySelectorAll("#like-btn").forEach(btn => {
         xhr.send(data);
     });
 });
+
+// document.querySelectorAll("#like-btn").forEach(btn => {
+//     btn.addEventListener("click", function() {
+//         const followerCounter = docuemnt.querySelectorAll('.stat-value')[1];
+
+//         btn.classList.toggle('followed');
+
+//         const xhr = new XMLHttpRequest();
+//         xhr.open('POST', 'http://127.0.0.1:5000/follow', true);
+//         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
+
+//         xhr.onload = () => {
+//             if (xhr.status === 200) {
+//                 const response = JSON.parse(xhr.responseText);
+//                 // console.log(response.status);
+
+//                 let currentLikes = parseInt(followerCounter.textContent);
+
+//                 if (btnIcon.classList.contains('followed')) {
+//                     currentLikes++;
+//                 } else {
+//                     currentLikes--;
+//                 }
+                
+//                 likeCounter.textContent = currentLikes;
+//             }
+//         }
+//         const data = JSON.stringify({ 'userId': this.dataset.userId });
+//         xhr.send(data);
+//     });
+// });
