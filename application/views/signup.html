@@ -1,93 +1,83 @@
 {% extends 'layout.html' %}
 
 {% block content %}
-    <div class="">
+    <div class="form-container">
+        <h1>Signup</h1>
         <form action="" method="post">
             {{ form.hidden_tag() }}
             <fieldset class="">
-                <legend class="">Signup</legend>
-
                 <div class="">
-                    {{ form.username.label(class="") }}
+                    {{ form.username(class="") }}
 
                     {% if form.username.error %}
-                        {{ form.username(class="") }}
                         <div class="">
                             {% for error in form.username.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
-                    {% else %}
-                        {{ form.username(class="") }}
                     {% endif %}
                 </div>
 
                 <div class="">
-                    {{ form.fullname.label(class="") }}
+                    {{ form.fullname(class="") }}
 
                     {% if form.fullname.error %}
-                        {{ form.fullname(class="") }}
                         <div class="">
                             {% for error in form.fullname.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
-                    {% else %}
-                        {{ form.fullname(class="") }}
                     {% endif %}
                 </div>
 
                 <div class="">
-                    {{ form.email.label(class="") }}
+                    {{ form.email(class="") }}
 
                     {% if form.email.error %}
-                        {{ form.email(class="") }}
                         <div class="">
                             {% for error in form.email.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
-                    {% else %}
-                        {{ form.email(class="") }}
                     {% endif %}
                 </div>
 
                 <div class="">
-                    {{ form.password.label(class="") }}
+                    {{ form.password(class="") }}
 
                     {% if form.password.error %}
-                        {{ form.password(class="") }}
                         <div class="">
                             {% for error in form.password.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
-                    {% else %}
-                        {{ form.password(class="") }}
                     {% endif %}
                 </div>
 
                 <div class="">
-                    {{ form.confirm_password.label(class="") }}
+                    {{ form.confirm_password(class="") }}
 
                     {% if form.confirm_password.error %}
-                        {{ form.confirm_password(class="") }}
                         <div class="">
                             {% for error in form.confirm_password.errors %}
                                 <span>{{ error }}</span>
                             {% endfor %}
                         </div>
-                    {% else %}
-                        {{ form.confirm_password(class="") }}
                     {% endif %}
                 </div>
-            </fieldset>
-            <div class="">
+            
                 {{ form.submit(class="btn btn-outline-info") }}
-                <small class="">
-                    <a href="{{ url_for('login') }}">Sudah punya akun?</a>
-                </small>
-            </div>
+            </fieldset>
         </form>
+        <small class="">
+            <div class="line-container">
+                <div class="line"></div>
+                <p>OR</p>
+                <div class="line"></div>
+            </div>
+            <ul>
+                <a href="{{ url_for('login') }}">Already have an account?</a>
+            </ul>
+        </small>
     </div>
 {% endblock content %}
