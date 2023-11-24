@@ -39,7 +39,7 @@ document.querySelectorAll("#like-btn").forEach(btn => {
 });
 
 const btn = document.querySelector("#follow-btn");
-btn.addEventListener("click", function() {
+btn?.addEventListener("click", function() {
     const followerCounter = document.querySelectorAll('.stat-value')[1];
 
     btn.classList.toggle('followed');

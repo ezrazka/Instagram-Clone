@@ -1,0 +1,51 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <div class="comments-section-container">
+        <div class="comments-section-header">
+            <a href="{{ url_for('index') }}">
+                <span><i class="fa fa-arrow-left fa-2x"></i></span>
+            </a>
+            <h1>Comments</h1>
+        </div>
+        <div class="comments-section">
+            {% for comment in comments %}
+                <div class="comment">
+                    <a href="{{ url_for('profile', username=get_user(comment.commenter_id).username) }}">
+                        <div class="commenter-profile-pic">
+                            <img src="{{ url_for('static', filename='images/profile_pics/' + get_user(comment.commenter_id).profile_pic) }}" alt="Commenter">
+                        </div>
+                    </a>
+                    <div class="comment-content">
+                        <a href="{{ url_for('profile', username=get_user(comment.commenter_id).username) }}">
+                            <span class="commenter-username">{{ get_user(comment.commenter_id).username }}</span>
+                        </a>
+                        <span class="comment-date">{{ parse_date(comment.comment_date, short=True) }}</span>
+                        <p class="comment-text">{{ comment.text }}</p>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="comments-section-footer">
+            <div class="profile-pic">
+                <img src="{{ url_for('static', filename='images/profile_pics/' + current_user.profile_pic) }}" alt="Profile Photo">
+            </div>
+            <form method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+                <fieldset class="">
+                    {{ form.text(class="") }}
+
+                    {% if form.text.error %}
+                        <div class="">
+                            {% for error in form.text.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    
+                    {{ form.submit(class="btn btn-outline-info") }}
+                </fieldset>
+            </form>
+        </div>
+    </div>
+{% endblock content %}

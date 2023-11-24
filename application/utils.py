@@ -3,7 +3,7 @@ import secrets
 from PIL import Image
 from datetime import datetime, timedelta
 
-from flask import current_app
+from flask import current_app, flash
 
 from wtforms.validators import ValidationError
 
@@ -17,19 +17,27 @@ def exists_email(form, email):
         raise ValidationError(
             "Email already exists. Please use a different email.")
 
-
 def not_exists_email(form, email):
     user = User.query.filter_by(email=email.data).first()
     if not user:
         raise ValidationError("Email not found.")
-
 
 def exists_username(form, username):
     user = User.query.filter_by(username=username.data).first()
     if user:
         raise ValidationError(
             "Username already exists. Please use a different username.")
+
+def flash_errors(form):
+    for field, errors in form.errors.items():
+        for error in errors:
+            flash(error, 'error')
 # END OF FORM UTILS
+
+# SQL UTILS
+def get_user(user_id):
+    return User.query.get(int(user_id))
+# END OF SQL UTILS
 
 # LOGIN MANAGER UTILS
 @login_manager.user_loader
@@ -54,8 +62,24 @@ def save_image(form_picture_data, folder_name):
 # END OF IMAGE SAVE UTILS
 
 # PARSER UTILS
-def parseDate(date):
+def parse_date(date, *, short=False):
     current_date = datetime.utcnow()
+
+    if short:
+        if current_date - date < timedelta(minutes=1):
+            seconds_diff = int((current_date - date).total_seconds())
+            return f'{seconds_diff}s'
+        if current_date - date < timedelta(hours=1):
+            minutes_diff = int((current_date - date).total_seconds() / 60)
+            return f'{minutes_diff}m'
+        if current_date - date < timedelta(days=1):
+            hours_diff = int((current_date - date).total_seconds() / (60 * 60))
+            return f'{hours_diff}h'
+        if current_date - date < timedelta(weeks=1):
+            days_diff = int((current_date - date).total_seconds() / (60 * 60 * 24))
+            return f'{days_diff}d'
+        weeks_diff = int((current_date - date).total_seconds() / (60 * 60 * 24 * 7))
+        return f'{weeks_diff}w'
 
     if current_date - date < timedelta(minutes=1):
         seconds_diff = int((current_date - date).total_seconds())

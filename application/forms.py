@@ -19,7 +19,7 @@ class SignUpForm(FlaskForm):
     submit = SubmitField("Sign Up")
 
 class EditProfileForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired(), Length(min=4, max=12)], render_kw={"placeholder": "Enter your username"})
+    username = StringField("Username", validators=[DataRequired(), Length(min=4, max=12), exists_username], render_kw={"placeholder": "Enter your username"})
     fullname = StringField("Full Name", validators=[Length(min=4, max=16)], render_kw={"placeholder": "Enter your full name"})
     bio = TextAreaField("Bio", render_kw={"placeholder": "Enter your bio"})
     profile_pic = FileField("Profile Picture", validators=[FileAllowed(["jpg", "jpeg", "png"])])
@@ -43,9 +43,13 @@ class ForgotPasswordForm(FlaskForm):
 
 class CreatePostForm(FlaskForm):
     post_pic = FileField("Post Picture", validators=[DataRequired(), FileAllowed(["jpg", "jpeg", "png"])])
-    caption = TextAreaField("Caption", render_kw={"placeholder": "Write a caption"})
+    caption = TextAreaField("Caption", render_kw={"placeholder": "Write a caption", "autocomplete": "off"})
     submit = SubmitField("Post")
 
 class EditPostForm(FlaskForm):
-    caption = StringField("Caption", render_kw={"placeholder": "Write a caption"})
+    caption = StringField("Caption", render_kw={"placeholder": "Write a caption", "autocomplete": "off"})
     submit = SubmitField("Update Post")
+
+class PostCommentForm(FlaskForm):
+    text = StringField("Text", validators=[DataRequired()], render_kw={"placeholder": "Add a comment", "autocomplete": "off"})
+    submit = SubmitField("Post")

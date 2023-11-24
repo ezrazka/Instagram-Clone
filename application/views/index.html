@@ -63,9 +63,11 @@
                                 <i class="fa fa-heart-o"></i>
                             {% endif %}
                         </span>
-                        <span id="comment-btn" data-post-id="{{ post.id }}">
-                            <i class="fa fa-comment-o"></i>
-                        </span>
+                        <a href="{{ url_for('comments', post_id=post.id) }}">
+                            <span id="comment-btn">
+                                <i class="fa fa-comment-o"></i>
+                            </span>
+                        </a>
                     </div>
                     {% if post.likes | length == 1 %}
                         <p class="like-counter">1 like</p>
@@ -73,13 +75,17 @@
                         <p class="like-counter">{{ post.likes | length }} likes</p>
                     {% endif %}
                     <p><span class="username">{{ post.posts_owner.username }}</span> {{ post.caption }}</p>
-                    {% if post.comments | length == 1 %}
-                        <p class="view-comments">View 1 comment</p>
+                    {% if post.comments | length >= 1 %}
+                        <a href="{{ url_for('comments', post_id=post.id) }}">
+                            {% if post.comments | length == 1 %}
+                                <p class="view-comments">View 1 comment</p>
+                            {% endif %}
+                            {% if post.comments | length > 1 %}
+                                <p class="view-comments">View all {{ post.likes | length }} comments</p>
+                            {% endif %}
+                        </a>
                     {% endif %}
-                    {% if post.comments | length > 1 %}
-                        <p class="view-comments">View all {{ post.likes | length }} comments</p>
-                    {% endif %}
-                    <p class="post-date">{{ parseDate(post.post_date) }}</p>
+                    <p class="post-date">{{ parse_date(post.post_date, short=False) }}</p>
                 </div>
             </div>
         {% endfor %}
