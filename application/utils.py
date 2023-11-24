@@ -1,6 +1,7 @@
 import os
 import secrets
 from PIL import Image
+from datetime import datetime, timedelta
 
 from flask import current_app
 
@@ -28,11 +29,6 @@ def exists_username(form, username):
     if user:
         raise ValidationError(
             "Username already exists. Please use a different username.")
-
-def not_exists_username(form, username):
-    user = User.query.filter_by(username=username.data).first()
-    if not user:
-        raise ValidationError("User not found.")
 # END OF FORM UTILS
 
 # LOGIN MANAGER UTILS
@@ -56,3 +52,27 @@ def save_image(form_picture_data, folder_name):
 
     return file_name
 # END OF IMAGE SAVE UTILS
+
+# PARSER UTILS
+def parseDate(date):
+    current_date = datetime.utcnow()
+
+    if current_date - date < timedelta(minutes=1):
+        seconds_diff = int((current_date - date).total_seconds())
+        return f'{seconds_diff} second{"s" if seconds_diff > 1 else ""} ago'
+    if current_date - date < timedelta(hours=1):
+        minutes_diff = int((current_date - date).total_seconds() / 60)
+        return f'{minutes_diff} minute{"s" if minutes_diff > 1 else ""} ago'
+    if current_date - date < timedelta(days=1):
+        hours_diff = int((current_date - date).total_seconds() / (60 * 60))
+        return f'{hours_diff} hour{"s" if hours_diff > 1 else ""} ago'
+    if current_date - date < timedelta(days=7):
+        days_diff = int((current_date - date).total_seconds() / (60 * 60 * 24))
+        return f'{days_diff} day{"s" if days_diff > 1 else ""} ago'
+    if current_date - date < timedelta(days=8):
+        return '1 week ago'
+    
+    if current_date.year == date.year:
+        return f'{date.strftime("%B")} {date.day}'
+    return f'{date.strftime("%B")} {date.day}, {date.year}'
+# END OF PARSER UTILS

@@ -3,10 +3,10 @@ from flask_wtf.file import FileField, FileAllowed
 from wtforms import StringField, SubmitField, EmailField, PasswordField, TextAreaField
 from wtforms.validators import DataRequired, Length, Email, EqualTo
 
-from application.utils import exists_email, not_exists_email, exists_username, not_exists_username
+from application.utils import exists_email, not_exists_email, exists_username
 
 class LoginForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired(), not_exists_username], render_kw={"placeholder": "Enter your username"})
+    username = StringField("Username", validators=[DataRequired()], render_kw={"placeholder": "Enter your username"})
     password = PasswordField("Password", validators=[DataRequired()], render_kw={"placeholder": "Password"})
     submit = SubmitField("Login")
 

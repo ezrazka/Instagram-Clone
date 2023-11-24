@@ -79,6 +79,7 @@
                     {% if post.comments | length > 1 %}
                         <p class="view-comments">View all {{ post.likes | length }} comments</p>
                     {% endif %}
+                    <p class="post-date">{{ parseDate(post.post_date) }}</p>
                 </div>
             </div>
         {% endfor %}

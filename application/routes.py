@@ -4,7 +4,7 @@ from flask_login import login_user, login_required, logout_user, current_user
 from application import app
 from application.models import *
 from application.forms import *
-from application.utils import save_image
+from application.utils import save_image, parseDate
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -21,13 +21,14 @@ def index():
         db.session.add(post)
         db.session.commit()
         flash('Your image has been posted 🩷!', 'success')
+        return redirect(url_for('index'))
 
     page = request.args.get('page', 1, type=int)
     posts = Post.query\
         .order_by(Post.post_date.desc())\
         .paginate(page=page, per_page=3)
 
-    return render_template('index.html', title='Home', form=form, posts=posts)
+    return render_template('index.html', title='Home', form=form, posts=posts, parseDate=parseDate)
 
 
 @app.route('/about')
@@ -57,7 +58,7 @@ def posts(username):
         flash('This user currently has no posts.', 'error')
         return redirect(url_for('profile', username=username))
 
-    return render_template('posts.html', title='Home', posts=posts, user=user)
+    return render_template('posts.html', title='Home', posts=posts, user=user, parseDate=parseDate)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -100,6 +101,7 @@ def login():
             return redirect(url_for('profile', username=current_user.username))
         else:
             flash('Invalid username or password.', 'error')
+            return redirect(url_for('login'))
 
     return render_template('login.html', title="Login", form=form)
 
