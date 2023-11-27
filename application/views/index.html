@@ -91,14 +91,16 @@
         {% endfor %}
     </div>
     <div class="pagination-box">
-        {% for page_number in posts.iter_pages() %}
-            <a href="{{ url_for('index', page=page_number) }}" class="page-circle">
-                {% if page_number == posts.page %}
-                    <p class="current">{{ page_number }}</p>
-                {% else %}
-                    <p>{{ page_number }}</p>
-                {% endif %}
-            </a>
-        {% endfor %}
+        <div class="pagination-wrapper">
+            {% for page_number in posts.iter_pages() %}
+                <a href="{{ url_for('index', page=page_number) }}" class="page-circle">
+                    {% if page_number == posts.page %}
+                        <p class="current">{{ page_number }}</p>
+                    {% else %}
+                        <p>{{ page_number }}</p>
+                    {% endif %}
+                </a>
+            {% endfor %}
+        </div>
     </div>
 {% endblock content %}

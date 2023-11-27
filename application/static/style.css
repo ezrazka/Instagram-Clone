@@ -14,7 +14,7 @@ body {
     height: max(600px, 100vh);
     display: flex;
     justify-content: center;
-    align-items: center;
+    /* align-items: center; */
     background-color: #111111;
 }
 
@@ -252,6 +252,15 @@ main {
     list-style: none;
 }
 
+.form-container small ul li a {
+    text-decoration: none;
+    color: #0080bb;
+}
+
+.form-container small ul li a:hover {
+    text-decoration: underline;
+}
+
 .home-form-container {
     display: flex;
     flex-direction: column;
@@ -320,11 +329,15 @@ main {
     color: #e44d4d;
 }
 
+.post-footer .interactions a:has(#comment-btn) {
+    text-decoration: none;
+    color: black;
+}
+
 .post-footer .interactions #comment-btn {
     display: inline-flex;
     justify-content: flex-start;
-    text-decoration: none;
-    color: black;
+    transform: translateY(-2px);
 }
 
 .post-footer .username {
@@ -345,10 +358,17 @@ main {
 .pagination-box {
     display: flex;
     justify-content: center;
-    gap: 10px;
     text-align: center;
     padding: 5px;
     margin-block: 20px;
+}
+
+.pagination-box .pagination-wrapper {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    width: 300px;
+    flex-wrap: wrap;
 }
 
 .pagination-box .page-circle {
@@ -521,12 +541,15 @@ a:has(.edit-profile) {
     justify-content: center;
 }
 
+.comments-section-header a:has(span) {
+    text-decoration: none;
+    color: black;
+}
+
 .comments-section-header span {
     position: absolute;
     left: 10px;
     bottom: 10px;
-    text-decoration: none;
-    color: black;
 }
 
 .comments-section-header h1 {
