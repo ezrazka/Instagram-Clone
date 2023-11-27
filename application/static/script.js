@@ -10,7 +10,7 @@ document.querySelectorAll("#like-btn").forEach(btn => {
         btnIcon.classList.toggle('liked');
 
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://127.0.0.1:5000/like', true);
+        xhr.open('POST', `${window.location.origin}/like`, true);
         xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
         xhr.onload = () => {
@@ -50,7 +50,7 @@ btn?.addEventListener("click", function() {
     }
 
     const xhr = new XMLHttpRequest();
-    xhr.open('POST', 'http://127.0.0.1:5000/follow', true);
+    xhr.open('POST', `${window.location.origin}/follow`, true);
     xhr.setRequestHeader('Content-Type', 'application/json;charset=UTF-8');
 
     xhr.onload = () => {

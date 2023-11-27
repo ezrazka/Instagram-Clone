@@ -80,11 +80,13 @@ def comments(post_id):
         flash('Your comment has been posted!', 'success')
         return redirect(url_for('comments', post_id=post_id))
     
+    post = Post.query.get(post_id)
+    user = User.query.get(post.author_id)
     comments = Comment.query.filter_by(post_id=post_id)\
         .order_by(Comment.comment_date.desc())
     
     flash_errors(form)
-    return render_template('comments.html', title=f'{post_id} Comments', form=form, comments=comments, parse_date=parse_date, get_user=get_user)
+    return render_template('comments.html', title=f'{user.username} Post Comments', form=form, comments=comments, parse_date=parse_date, get_user=get_user)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -125,6 +127,9 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and password == user.password:
             login_user(user)
+            next = request.args.get('next')
+            if next:
+                return redirect(next)
             return redirect(url_for('profile', username=current_user.username))
         else:
             flash('Invalid username or password.', 'error')
@@ -187,6 +192,7 @@ def verification_reset_password(user_id):
 
         db.session.commit()
         flash('Password changed', 'success')
+        logout_user()
         return redirect(url_for('login'))
     
     flash_errors(form)
