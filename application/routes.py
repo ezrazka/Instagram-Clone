@@ -50,7 +50,7 @@ def profile(username):
 @app.route('/<username>/posts')
 @login_required
 def posts(username):
-    page = request.args.get('page', 1, type=int)
+    page = request.args.get('page', 1)
     user = User.query.filter_by(username=username).first()
     posts = Post.query.filter_by(author_id=user.id)\
         .order_by(Post.post_date.desc())\
@@ -80,13 +80,14 @@ def comments(post_id):
         flash('Your comment has been posted!', 'success')
         return redirect(url_for('comments', post_id=post_id))
     
+    next = request.args.get('next', url_for('index'))
     post = Post.query.get(post_id)
     user = User.query.get(post.author_id)
     comments = Comment.query.filter_by(post_id=post_id)\
         .order_by(Comment.comment_date.desc())
     
     flash_errors(form)
-    return render_template('comments.html', title=f'{user.username} Post Comments', form=form, comments=comments, parse_date=parse_date, get_user=get_user)
+    return render_template('comments.html', title=f'{user.username} Post Comments', form=form, comments=comments, parse_date=parse_date, get_user=get_user, next=next)
 
 
 @app.route('/signup', methods=['GET', 'POST'])
@@ -128,6 +129,7 @@ def login():
         if user and password == user.password:
             login_user(user)
             next = request.args.get('next')
+            flash('Successfully logged in.', 'success')
             if next:
                 return redirect(next)
             return redirect(url_for('profile', username=current_user.username))
@@ -143,6 +145,7 @@ def login():
 @login_required
 def logout():
     logout_user()
+    flash('Successfully logged out.', 'success')
     return redirect(url_for('login'))
 
 

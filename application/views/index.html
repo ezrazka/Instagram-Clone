@@ -63,7 +63,7 @@
                                 <i class="fa fa-heart-o"></i>
                             {% endif %}
                         </span>
-                        <a href="{{ url_for('comments', post_id=post.id) }}">
+                        <a href="{{ url_for('comments', post_id=post.id, next=request.full_path) }}">
                             <span id="comment-btn">
                                 <i class="fa fa-comment-o"></i>
                             </span>
@@ -76,7 +76,7 @@
                     {% endif %}
                     <p><span class="username">{{ post.posts_owner.username }}</span> {{ post.caption }}</p>
                     {% if post.comments | length >= 1 %}
-                        <a href="{{ url_for('comments', post_id=post.id) }}">
+                    <a href="{{ url_for('comments', post_id=post.id, next=request.full_path) }}">
                             {% if post.comments | length == 1 %}
                                 <p class="view-comments">View 1 comment</p>
                             {% endif %}
