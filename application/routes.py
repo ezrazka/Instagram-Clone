@@ -150,7 +150,7 @@ def reset_password():
         user = User.query.get(current_user.id)
         user.password = form.new_password.data
 
-        if user.password != form.old_password:
+        if user.password != form.old_password.data:
             flash('Your password is incorrect.', 'error')
             return redirect('reset_password')
 

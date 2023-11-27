@@ -19,7 +19,7 @@ class SignUpForm(FlaskForm):
     submit = SubmitField("Sign Up")
 
 class EditProfileForm(FlaskForm):
-    username = StringField("Username", validators=[DataRequired(), Length(min=4, max=12), exists_username], render_kw={"placeholder": "Enter your username"})
+    username = StringField("Username", validators=[DataRequired(), Length(min=4, max=12)], render_kw={"placeholder": "Enter your username"})
     fullname = StringField("Full Name", validators=[Length(min=4, max=16)], render_kw={"placeholder": "Enter your full name"})
     bio = TextAreaField("Bio", render_kw={"placeholder": "Enter your bio"})
     profile_pic = FileField("Profile Picture", validators=[FileAllowed(["jpg", "jpeg", "png"])])
